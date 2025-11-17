@@ -32,10 +32,12 @@ void trocar(int *a, int *b, Metricas *m) {
     *b = temp;
 }
 
-void imprimir_vetor(int *v, int n) {
+void imprimir_vetor(int *v, int n, const char *titulo) {
+    printf("%s: ", titulo);
     for (int i = 0; i < n; i++) {
-        printf("%d", v[i]);
+        printf("%d ", v[i]);
     }
+    printf("\n");
 }
 
 void copiar_vetor(int *destino, int *origem, int n) {
@@ -88,14 +90,19 @@ void quick_sort(int *v, int n, Metricas *m) {
 // FUNÇÃO DE BENCHMARK
 // ============================================================================
 
-double executar_ordenacao(int *v, int n, Metricas *m, int *v_ordenado) {
-    copiar_vetor(v_ordenado, v, n);
+double executar_ordenacao(int *v, int n, Metricas *m) {
+    int *v_copia = (int *)malloc(n * sizeof(int));
+    copiar_vetor(v_copia, v, n);
     
     clock_t inicio = clock();
-    quick_sort(v_ordenado, n, m);
+    quick_sort(v_copia, n, m);
     clock_t fim = clock();
     
     double tempo_ms = 1000.0 * (fim - inicio) / CLOCKS_PER_SEC;
+    
+    imprimir_vetor(v_copia, n, "Vetor Ordenado");
+    
+    free(v_copia);
     
     return tempo_ms;
 }
@@ -120,40 +127,51 @@ int* converter_rgm_para_vetor(const char *rgm, int *tamanho) {
 // ============================================================================
 
 int main() {
+    printf("========================================\n");
+    printf("  ORDENAÇÃO DE RGM - QUICK SORT\n");
+    printf("========================================\n\n");
+    
     const char *rgm = "44947615";
+    printf("RGM: %s\n\n", rgm);
     
     int tamanho;
     int *digitos = converter_rgm_para_vetor(rgm, &tamanho);
-    int *digitos_ordenados = (int *)malloc(tamanho * sizeof(int));
     
-    // Exibe RGM original
-    printf("RGM original: ");
-    imprimir_vetor(digitos, tamanho);
+    printf("Dígitos do RGM (antes da ordenação):\n");
+    imprimir_vetor(digitos, tamanho, "Vetor Original");
     printf("\n");
     
-    // Executa ordenação
     Metricas metricas;
-    double tempo_ms = executar_ordenacao(digitos, tamanho, &metricas, digitos_ordenados);
     
-    // Exibe RGM ordenado
-    printf("RGM ordenado: ");
-    imprimir_vetor(digitos_ordenados, tamanho);
-    printf("\n\n");
+    printf("----------------------------------------\n");
+    printf("Executando Quick Sort...\n");
+    printf("----------------------------------------\n");
     
-    // Calcula total de passos (comparações + trocas)
-    long long passos_totais = metricas.comparacoes + metricas.trocas;
+    double tempo_ms = executar_ordenacao(digitos, tamanho, &metricas);
     
-    // Saída em formato CSV
-    printf("=== RESUMO EM FORMATO CSV ===\n");
-    printf("metodo,N,caso,passos,tempo_ms\n");
-    printf("quick_sort,%d,rgm,%lld,%.6f\n", 
+    printf("\n========================================\n");
+    printf("  RESULTADOS (Formato CSV)\n");
+    printf("========================================\n\n");
+    
+    printf("metodo,N,caso,comparacoes,trocas,tempo_ms\n");
+    printf("quick_sort,%d,rgm,%lld,%lld,%.6f\n", 
            tamanho, 
-           passos_totais,
+           metricas.comparacoes, 
+           metricas.trocas, 
            tempo_ms);
     
-    // Libera memória
+    printf("\n========================================\n");
+    printf("  MÉTRICAS DETALHADAS\n");
+    printf("========================================\n");
+    printf("Método:       Quick Sort (Partição Lomuto)\n");
+    printf("Tamanho (N):  %d dígitos\n", tamanho);
+    printf("Caso:         RGM\n");
+    printf("Comparações:  %lld\n", metricas.comparacoes);
+    printf("Trocas:       %lld\n", metricas.trocas);
+    printf("Tempo:        %.6f ms\n", tempo_ms);
+    printf("========================================\n");
+    
     free(digitos);
-    free(digitos_ordenados);
     
     return 0;
 }
