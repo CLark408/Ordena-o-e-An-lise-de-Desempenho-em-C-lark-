@@ -1,61 +1,74 @@
-# Ordena-o-e-An-lise-de-Desempenho-em-C-lark-
-Quick Sort Benchmark com Métricas (RGM)
-Este projeto em C implementa o algoritmo de ordenação Quick Sort utilizando o esquema de partição de Lomuto. O objetivo principal é não apenas ordenar uma sequência de dígitos (especificamente, os dígitos de um RGM predefinido), mas também rastrear e relatar métricas detalhadas de desempenho, como o número total de comparações e trocas realizadas durante o processo de ordenação, além do tempo de execução.
-Estrutura do Código
-O código é dividido em seções lógicas para facilitar a manutenção e a análise.
-1. Estrutura de Métricas (Metricas)
-Define uma estrutura para armazenar os contadores de desempenho:
-comparacoes: Número total de comparações realizadas.
-trocas: Número total de trocas de elementos realizadas.
-Macros (CONTAR_COMPARACAO, CONTAR_TROCA) são usadas para incrementar esses contadores de forma clara dentro das funções de ordenação.
-2. Funções Auxiliares
-Contém funções utilitárias como:
-resetar_metricas: Zera os contadores.
-trocar: Realiza a troca de dois elementos, incrementando o contador de trocas.
-imprimir_vetor: Imprime os elementos do vetor.
-copiar_vetor: Cria uma cópia do vetor para que a ordenação não altere o original, se necessário, ou para preparar o vetor para o benchmark.
-3. Quick Sort (Partição Lomuto)
-Implementa o algoritmo Quick Sort:
-particionar: Implementa a lógica da partição de Lomuto, escolhendo o último elemento como pivô. É nesta função que a maior parte das CONTAR_COMPARACAO e trocar ocorrem.
-quick_sort_recursivo: Função recursiva principal do Quick Sort.
-quick_sort: Função de entrada que inicializa as métricas e chama a função recursiva.
-4. Função de Benchmark (executar_ordenacao)
-Responsável por cronometrar a execução da ordenação.
-Cria uma cópia do vetor de entrada.
-Utiliza clock() para medir o tempo de execução.
-Retorna o tempo decorrido em milissegundos.
-5. Conversão do RGM
-converter_rgm_para_vetor: Converte uma string de RGM (ex: "44947615") em um vetor de inteiros ({4, 4, 9, 4, 7, 6, 1, 5}).
-6. Função Principal (main)
-Define o RGM a ser ordenado ("44947615").
-Executa a conversão e a ordenação.
-Imprime o RGM original e o RGM ordenado.
-Exibe um resumo final no formato CSV para facilitar a análise de dados.
-Como Compilar e Executar
-O código pode ser compilado usando um compilador C padrão, como o GCC.
-Dependências
-stdio.h
-stdlib.h
-string.h
-time.h
-Comandos
-Salve o código como quicksort_rgm.c.
-Compile usando GCC:
+Quick Sort - Análise de Desempenho (RGM)
+🎯 Descrição
+Este projeto em C implementa o algoritmo de ordenação Quick Sort utilizando o esquema de Partição de Lomuto. Seu objetivo principal é ordenar os dígitos de um número de Registro Geral de Matrícula (RGM) específico e realizar uma análise detalhada do desempenho do algoritmo neste cenário de "caso real" com um pequeno conjunto de dados.
+O código rastreia e exibe métricas essenciais, como o número de comparações, o número de trocas e o tempo de execução.
+✨ Funcionalidades
+Implementação Quick Sort: Utiliza a técnica de ordenação Quick Sort (Partição de Lomuto).
+Contagem de Métricas: Rastreia o número exato de comparações e trocas (swaps) realizadas.
+Medição de Tempo: Calcula o tempo de execução da ordenação em milissegundos (ms).
+Conversão RGM: Converte a string do RGM em um vetor de dígitos inteiros.
+Saída CSV: Gera os resultados em um formato de tabela CSV para fácil importação e análise de dados.
+🔢 RGM Alvo
+O código está configurado para ordenar os dígitos do seguinte RGM:
+code
+C
+const char *rgm = "44947615"; // N = 8
+⚙️ Pré-requisitos
+Para compilar e executar este código, você precisará de um compilador C instalado no seu sistema (ex: GCC, Clang, etc.).
+🚀 Compilação e Execução
+Siga os passos abaixo em um terminal Linux, macOS ou similar (ou use o ambiente de desenvolvimento de sua preferência):
+Salve o código: Salve o código-fonte como um arquivo (por exemplo, quick_sort_rgm.c).
+Compile: Use o GCC para compilar o arquivo.
 code
 Bash
-gcc quicksort_rgm.c -o quicksort_rgm
-Execute o programa:
+gcc quick_sort_rgm.c -o quick_sort_rgm
+Execute: Execute o programa compilado.
 code
 Bash
-./quicksort_rgm
-Saída Esperada
-A saída do programa apresentará o vetor de dígitos antes e depois da ordenação, seguido pelo resumo das métricas em formato CSV.
+./quick_sort_rgm
+🖥️ Exemplo de Saída
+A execução do programa no terminal deve produzir uma saída semelhante a esta:
 code
 Code
-RGM original: 44947615
-RGM ordenado: 14456799
+========================================
+  ORDENAÇÃO DE RGM - QUICK SORT
+========================================
 
-=== RESUMO EM FORMATO CSV ===
-metodo,N,caso,passos,tempo_ms
-quick_sort,8,rgm,<passos_totais_aqui>,<tempo_em_ms_aqui>
-Nota: Os valores de <passos_totais_aqui> (Comparações + Trocas) e <tempo_em_ms_aqui> podem variar dependendo do hardware e do compilador, mas o formato será consistente.
+RGM: 44947615
+
+Dígitos do RGM (antes da ordenação):
+Vetor Original: 4 4 9 4 7 6 1 5 
+
+----------------------------------------
+Executando Quick Sort...
+----------------------------------------
+Vetor Ordenado: 1 4 4 4 5 6 7 9 
+
+========================================
+  RESULTADOS (Formato CSV)
+========================================
+
+metodo,N,caso,comparacoes,trocas,tempo_ms
+quick_sort,8,rgm,16,6,0.003120
+
+========================================
+  MÉTRICAS DETALHADAS
+========================================
+Método:       Quick Sort (Partição Lomuto)
+Tamanho (N):  8 dígitos
+Caso:         RGM
+Comparações:  16
+Trocas:       6
+Tempo:        0.003120 ms
+========================================
+Nota: Os valores de Comparações, Trocas e Tempo podem variar dependendo da arquitetura do processador e do compilador/biblioteca C utilizados.
+📂 Estrutura do Código
+Função / Estrutura	Descrição
+Metricas	Estrutura para rastrear comparacoes e trocas.
+trocar	Função auxiliar que incrementa o contador de trocas.
+particionar	Implementa o esquema de Partição de Lomuto.
+quick_sort_recursivo	Lógica recursiva principal do Quick Sort.
+quick_sort	Função wrapper que inicializa as métricas.
+converter_rgm_para_vetor	Converte a string RGM em um array de inteiros.
+executar_ordenacao	Função de benchmark: copia o vetor, mede o tempo e chama a ordenação.
+main	Função principal que orquestra a execução, exibindo os resultados.
